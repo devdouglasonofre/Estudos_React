@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 
 function Todo(props) {
-  const [todoContent, setToDo] = useState(props.todo.content);
+  const [todo, setToDo] = useState(props.todo.content);
   const [editMode, setEditMode] = useState(false);
 
   function handleUpdate(todo) {
-    props.onUpdate(todo, todoContent);
+    props.onUpdate(todo, todo);
   }
 
   function toggleEditMode(value) {
@@ -14,8 +14,8 @@ function Todo(props) {
   }
 
   function saveEdit(e, todo) {
-    if (e.key == "Enter"){
-      toggleEditMode(false)
+    if (e.key === "Enter") {
+      toggleEditMode(false);
       handleUpdate(todo);
     }
   }
@@ -28,13 +28,13 @@ function Todo(props) {
         onChange={(e) => props.onChange(e.target.checked, props.todo)}
       />
       {!editMode ? (
-        <label onClick={() => toggleEditMode(true)}>{todoContent}</label>
+        <label onClick={() => toggleEditMode(true)}>{todo}</label>
       ) : (
         <input
           type="text"
           onKeyDown={(e) => saveEdit(e, props.todo)}
           onChange={(e) => setToDo(e.target.value)}
-          value={todoContent}
+          value={todo}
         />
       )}
 
@@ -125,22 +125,21 @@ function Home() {
     <div>
       <h1>To Do</h1>
       {todoList.map((todo) => {
-        if (todo) {
-          return (
-            <Todo
-              key={todo.id}
-              todo={todo}
-              onChange={(e) => handleTodoCheck(e, todo)}
-              delete={deleteTodo}
-              onUpdate={updateTodo}
-            />
-          );
-        }
+        return (
+          todo &&
+          <Todo
+            key={todo.id}
+            todo={todo}
+            onChange={(e) => handleTodoCheck(e, todo)}
+            delete={deleteTodo}
+            onUpdate={updateTodo}
+          />
+        );
       })}
       <h1>Done</h1>
       {doneList.map((item) => {
-        if (item) {
           return (
+            item &&
             <Todo
               key={item.id}
               todo={item}
@@ -149,7 +148,6 @@ function Home() {
               onUpdate={updateTodo}
             />
           );
-        }
       })}
       <hr />
       <CreateTodoField onSubmit={createTodo} />
